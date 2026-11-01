@@ -51,8 +51,9 @@ pub async fn get_all_users(pool: &PgPool) -> Result<Vec<UserResponse>, String> {
     let users = user_repository::get_all_users(pool)
         .await
         .map_err(|e| e.to_string())?;
-
+    // dbg!(&users);
     let mut responses = Vec::with_capacity(users.len());
+    // dbg!(&users.len());
 
     for user in users {
         let images = user_image_repository::get_images_by_user_id(pool, user.id)

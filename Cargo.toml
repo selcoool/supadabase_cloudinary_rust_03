@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 actix-web = "4"
+actix-ws = "0.3"
 actix-multipart = "0.7"
 futures-util = "0.3"
 serde = { version = "1", features = ["derive"] }
@@ -29,3 +30,4 @@ serde_urlencoded = "0.7"
 sha1 = "0.10"
 hex = "0.4"
 bcrypt = "0.17"
+actix-cors = "0.7.2"

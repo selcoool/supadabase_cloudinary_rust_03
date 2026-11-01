@@ -1,6 +1,37 @@
 use crate::models::user::User;
 use sqlx::{PgPool, Postgres, Transaction};
 use uuid::Uuid;
+// pub async fn create_user(
+//     tx: &mut Transaction<'_, Postgres>,
+//     name: &str,
+//     email: &str,
+//     password_hash: &str,
+//     phone_number: Option<&str>,
+//     avatar_url: Option<&str>,
+//     avatar_public_id: Option<&str>,
+// ) -> Result<User, sqlx::Error> {
+//     sqlx::query_as::<_, User>(
+//         r#"
+//         INSERT INTO users (
+//             name, email, password_hash, phone_number,
+//             avatar_url, avatar_public_id
+//         )
+//         VALUES ($1, $2, $3, $4, $5, $6)
+//         RETURNING
+//             id, name, email, phone_number, avatar_url,
+//             avatar_public_id, created_at, updated_at
+//         "#,
+//     )
+//     .bind(name)
+//     .bind(email)
+//     .bind(password_hash)
+//     .bind(phone_number)
+//     .bind(avatar_url)
+//     .bind(avatar_public_id)
+//     .fetch_one(&mut **tx)
+//     .await
+// }
+
 pub async fn create_user(
     tx: &mut Transaction<'_, Postgres>,
     name: &str,
@@ -13,13 +44,24 @@ pub async fn create_user(
     sqlx::query_as::<_, User>(
         r#"
         INSERT INTO users (
-            name, email, password_hash, phone_number,
-            avatar_url, avatar_public_id
+            name,
+            email,
+            password_hash,
+            phone_number,
+            avatar_url,
+            avatar_public_id
         )
         VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING
-            id, name, email, phone_number, avatar_url,
-            avatar_public_id, created_at, updated_at
+            id,
+            name,
+            email,
+            phone_number,
+            avatar_url,
+            avatar_public_id,
+            role,
+            created_at,
+            updated_at
         "#,
     )
     .bind(name)
@@ -31,12 +73,13 @@ pub async fn create_user(
     .fetch_one(&mut **tx)
     .await
 }
+
 pub async fn get_user_by_id(pool: &PgPool, id: Uuid) -> Result<Option<User>, sqlx::Error> {
     sqlx::query_as::<_, User>(
         r#"
         SELECT
             id, name, email, phone_number, avatar_url,
-            avatar_public_id, created_at, updated_at
+            avatar_public_id,role,created_at, updated_at
         FROM users
         WHERE id = $1
         "#,
@@ -50,7 +93,7 @@ pub async fn get_all_users(pool: &sqlx::PgPool) -> Result<Vec<User>, sqlx::Error
     sqlx::query_as::<_, User>(
         r#"
         SELECT id, name, email, password_hash, phone_number,
-               avatar_url, avatar_public_id, created_at, updated_at
+               avatar_url, avatar_public_id,role, created_at, updated_at
         FROM users
         ORDER BY created_at DESC
         "#,
