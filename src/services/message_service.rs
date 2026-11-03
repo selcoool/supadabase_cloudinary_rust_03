@@ -130,63 +130,63 @@ pub async fn send_message(
 }
 
 // ADD GROUP MEMBERS
-pub async fn add_group_members(
-    pool: &PgPool,
-    group_id: i64,
-    user_ids: Vec<Uuid>,
-) -> Result<u64, String> {
-    if user_ids.is_empty() {
-        return Err("Danh sách user_ids không được rỗng".to_string());
-    }
+// pub async fn add_group_members(
+//     pool: &PgPool,
+//     group_id: i64,
+//     user_ids: Vec<Uuid>,
+// ) -> Result<u64, String> {
+//     if user_ids.is_empty() {
+//         return Err("Danh sách user_ids không được rỗng".to_string());
+//     }
 
-    if user_ids.len() > 100 {
-        return Err("Chỉ được thêm tối đa 100 người mỗi lần".to_string());
-    }
+//     if user_ids.len() > 100 {
+//         return Err("Chỉ được thêm tối đa 100 người mỗi lần".to_string());
+//     }
 
-    // Kiểm tra group có tồn tại không
-    let group_exists =
-        sqlx::query_scalar::<_, bool>("SELECT EXISTS(SELECT 1 FROM chat_groups WHERE id = $1)")
-            .bind(group_id)
-            .fetch_one(pool)
-            .await
-            .map_err(|e| e.to_string())?;
+//     // Kiểm tra group có tồn tại không
+//     let group_exists =
+//         sqlx::query_scalar::<_, bool>("SELECT EXISTS(SELECT 1 FROM chat_groups WHERE id = $1)")
+//             .bind(group_id)
+//             .fetch_one(pool)
+//             .await
+//             .map_err(|e| e.to_string())?;
 
-    if !group_exists {
-        return Err("Group không tồn tại".to_string());
-    }
+//     if !group_exists {
+//         return Err("Group không tồn tại".to_string());
+//     }
 
-    // Loại bỏ UUID trùng lặp
-    let unique_user_ids: Vec<Uuid> = user_ids
-        .iter()
-        .copied()
-        .collect::<std::collections::HashSet<_>>()
-        .into_iter()
-        .collect();
+//     // Loại bỏ UUID trùng lặp
+//     let unique_user_ids: Vec<Uuid> = user_ids
+//         .iter()
+//         .copied()
+//         .collect::<std::collections::HashSet<_>>()
+//         .into_iter()
+//         .collect();
 
-    // Kiểm tra tất cả user có tồn tại không
-    let existing_count = sqlx::query_scalar::<_, i64>(
-        r#"
-        SELECT COUNT(DISTINCT id)
-        FROM users
-        WHERE id = ANY($1::UUID[])
-        "#,
-    )
-    .bind(&unique_user_ids)
-    .fetch_one(pool)
-    .await
-    .map_err(|e| e.to_string())?;
+//     // Kiểm tra tất cả user có tồn tại không
+//     let existing_count = sqlx::query_scalar::<_, i64>(
+//         r#"
+//         SELECT COUNT(DISTINCT id)
+//         FROM users
+//         WHERE id = ANY($1::UUID[])
+//         "#,
+//     )
+//     .bind(&unique_user_ids)
+//     .fetch_one(pool)
+//     .await
+//     .map_err(|e| e.to_string())?;
 
-    if existing_count != unique_user_ids.len() as i64 {
-        return Err("Có user_id không tồn tại".to_string());
-    }
+//     if existing_count != unique_user_ids.len() as i64 {
+//         return Err("Có user_id không tồn tại".to_string());
+//     }
 
-    // Thêm thành viên
-    let added = repo::add_members(pool, group_id, &unique_user_ids)
-        .await
-        .map_err(|e| e.to_string())?;
+//     // Thêm thành viên
+//     let added = repo::add_members(pool, group_id, &unique_user_ids)
+//         .await
+//         .map_err(|e| e.to_string())?;
 
-    Ok(added)
-}
+//     Ok(added)
+// }
 
 // use std::sync::Arc;
 

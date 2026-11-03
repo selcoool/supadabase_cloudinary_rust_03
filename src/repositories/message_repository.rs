@@ -86,25 +86,25 @@ pub async fn get_group_members(pool: &PgPool, group_id: i64) -> Result<Vec<Uuid>
 }
 
 // THÊM THÀNH VIÊN GROUP
-pub async fn add_members(
-    pool: &PgPool,
-    group_id: i64,
-    user_ids: &[Uuid],
-) -> Result<u64, sqlx::Error> {
-    let result = sqlx::query(
-        r#"
-        INSERT INTO group_members (group_id, user_id)
-        SELECT $1, unnest($2::UUID[])
-        ON CONFLICT (group_id, user_id) DO NOTHING
-        "#,
-    )
-    .bind(group_id)
-    .bind(user_ids)
-    .execute(pool)
-    .await?;
+// pub async fn add_members(
+//     pool: &PgPool,
+//     group_id: i64,
+//     user_ids: &[Uuid],
+// ) -> Result<u64, sqlx::Error> {
+//     let result = sqlx::query(
+//         r#"
+//         INSERT INTO group_members (group_id, user_id)
+//         SELECT $1, unnest($2::UUID[])
+//         ON CONFLICT (group_id, user_id) DO NOTHING
+//         "#,
+//     )
+//     .bind(group_id)
+//     .bind(user_ids)
+//     .execute(pool)
+//     .await?;
 
-    Ok(result.rows_affected())
-}
+//     Ok(result.rows_affected())
+// }
 
 // =====================================
 // PRIVATE CHAT HISTORY

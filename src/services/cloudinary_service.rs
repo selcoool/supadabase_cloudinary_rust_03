@@ -66,10 +66,10 @@ impl CloudinaryService {
 
     /// Upload vào folder mặc định CLOUDINARY_FOLDER.
     /// Giữ lại API này để tương thích với các nơi đang gọi upload cũ.
-    pub async fn upload(&self, bytes: Vec<u8>, filename: &str) -> Result<UploadedImage, String> {
-        self.upload_to_folder(bytes, filename, &self.config.folder)
-            .await
-    }
+    // pub async fn upload(&self, bytes: Vec<u8>, filename: &str) -> Result<UploadedImage, String> {
+    //     self.upload_to_folder(bytes, filename, &self.config.folder)
+    //         .await
+    // }
 
     /// Upload avatar vào CLOUDINARY_AVATAR_FOLDER.
     pub async fn upload_avatar(

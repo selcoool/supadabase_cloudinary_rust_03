@@ -2,7 +2,7 @@ use crate::services::{
     cloudinary_service::{CloudinaryService, UploadedImage},
     user_service,
 };
-use actix_multipart::{Field, Multipart};
+use actix_multipart::Multipart;
 use actix_web::{HttpResponse, Responder, web};
 use futures_util::StreamExt;
 use serde_json::json;
